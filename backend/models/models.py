@@ -7,7 +7,9 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     id = Column(BigInteger(), primary_key=True, autoincrement=True)
+    email = Column(String(), unique=True, nullable=False)
     name = Column(String(), nullable=False)
+    password_hash = Column(LargeBinary())
     is_admin = Column(Boolean(), default=False)
 
 class Tournament(Base):

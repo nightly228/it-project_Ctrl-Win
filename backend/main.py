@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 import uvicorn
 import asyncio
+from routes import base, users, tournaments
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,15 +15,10 @@ async def lifespan(app: FastAPI):
     print("Shutting down")
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(base.router)
+app.include_router(users.router)
+app.include_router(tournaments.router)
 
-# Add your routes here
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
