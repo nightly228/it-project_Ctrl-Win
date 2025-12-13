@@ -10,3 +10,9 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class CreateTournamentRequest(BaseModel):
+    name: str
+    game: str
+    max_players: int
+    start_time: datetime

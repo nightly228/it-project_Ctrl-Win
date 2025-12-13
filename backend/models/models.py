@@ -25,12 +25,12 @@ class Signup(Base):
     __tablename__ = "signups"
     id = Column(BigInteger(), primary_key=True, autoincrement=True)
     tournament_id = Column(ForeignKey("tournaments.id"), nullable=False)
-    user_id = Column(ForeignKey("users.id"), nullable=False)
+    user_email = Column(ForeignKey("users.email"), nullable=False)
     status = Column(String(), default="pending")  # pending, confirmed, checked_in
     
     # Уникальная пара: пользователь может регистрироваться на турнир только один раз
     __table_args__ = (
-        UniqueConstraint('tournament_id', 'user_id', name='uq_tournament_user'),
+        UniqueConstraint('tournament_id', 'user_email', name='uq_tournament_user'),
     )
 
 class Match(Base):

@@ -2,7 +2,7 @@ from fastapi import HTTPException, APIRouter, Header
 from services.base import *
 from utils import *
 from schemas import *
-from services.base import *
+from services.users import *
 
 router = APIRouter(prefix='/users')
 
