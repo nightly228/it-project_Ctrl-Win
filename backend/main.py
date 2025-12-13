@@ -1,5 +1,6 @@
 from models.database import *
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 import asyncio
@@ -15,6 +16,13 @@ async def lifespan(app: FastAPI):
     print("Shutting down")
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(base.router)
 app.include_router(users.router)
 app.include_router(tournaments.router)
