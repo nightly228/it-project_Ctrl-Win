@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'; // Импорт навигации
 import DashboardLayout from "../layout/DashboardLayout";
 import CommandCenter from "../components/dashboard/CommandCenter";
@@ -9,10 +9,8 @@ import TournamentsHistory from "../components/dashboard/TournamentsHistory";
 import CalendarBlock from "../components/dashboard/CalendarBlock";           // НОВЫЙ
 import OrganizerAchievements from "../components/dashboard/OrganizerAchievements"; // НОВЫЙ
 
-import {
-  dashboardData,
-  tournamentsHistory
-} from "../global/mockData";
+import {dashboardData, tournamentsHistory} from "../global/mockData";
+import { tournamentApi, apiUtils } from "../global/api";
 
 export default function Dashboard() {
   const [tournaments, setTournaments] = useState([]);

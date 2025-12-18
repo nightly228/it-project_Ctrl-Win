@@ -10,34 +10,45 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432" # Сменили на 5433, чтобы не конфликтовать с локальной БД
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 30s  # Дайте время на инициализацию
+      start_period: 10s
     restart: unless-stopped
 
   backend:
     build: ./backend
     environment:
       DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      SECRET_TOKEN: ${SECRET_TOKEN}
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app             # Синхронизация кода бэкенда
     depends_on:
       db:
-        condition: service_healthy  # Ждём пока БД будет готова
-    command: >
-      sh -c "sleep 5 && python main.py"
+        condition: service_healthy
+    # Используем uvicorn с флагом --reload для автоперезапуска питона
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
 
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app           # Синхронизация кода фронтенда
+      - /app/node_modules         # Важно: не затираем зависимости внутри контейнера
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Нужно для Hot Reload на Windows
+      - WATCHPACK_POLLING=true
     depends_on:
       - backend
+    # Запускаем через npm, чтобы работал Vite/Webpack dev server
+    command: npm run dev 
     restart: unless-stopped
 
 volumes:

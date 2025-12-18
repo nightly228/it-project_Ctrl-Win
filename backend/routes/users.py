@@ -9,12 +9,14 @@ router = APIRouter(prefix='/users')
 
 @router.post("/register")
 async def register(data: RegisterRequest):
+    print(f"[[{dict(data)}]]")
     jwt_token = await register_user(data)
     return {"message": "Registration successful", "token": jwt_token}
 
 
 @router.post("/login")
 async def login(data: LoginRequest):
+    print(f"[[{dict(data)}]]")
     jwt_token = await login_check(data)
     if jwt_token:
         return {"message": "Login successful", "token": jwt_token}

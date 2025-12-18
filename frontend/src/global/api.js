@@ -243,7 +243,7 @@ export const authApi = {
    */
   login: async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/users/login', { email, password });
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
@@ -264,7 +264,14 @@ export const authApi = {
    */
   register: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      const response = await api.post('/users/register', userData);
+      
+      // Если бэкенд возвращает токен сразу после регистрации
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        api.defaults.headers.Authorization = `Bearer ${response.data.token}`;
+      }
+      
       return response.data;
     } catch (error) {
       console.error('Error registering:', error);
