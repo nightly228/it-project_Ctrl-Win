@@ -1,21 +1,22 @@
 // src/layout/DashboardLayout.jsx
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import Sidebar from "../components/ui/Sidebar"; 
-import Topbar from "../components/ui/Topbar";  
+import Sidebar from '../components/ui/Sidebar';
+import Topbar from '../components/ui/Topbar';
 
 export default function DashboardLayout({ children }) {
-  const location = useLocation();
-  // Проверяем, находимся ли мы на странице профиля
-  const isProfilePage = location.pathname.includes('/profile');
-
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout" style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      background: '#0f0f0f' // Принудительно ставим темный цвет
+    }}>
       <Sidebar />
-      <div className="dashboard-main">
-        {/* Передаем флаг в Topbar */}
-        <Topbar isProfilePage={isProfilePage} />
-        <div className="dashboard-content">{children}</div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Topbar />
+        <main style={{ padding: '20px', flex: 1, color: 'white' }}>
+          {/* Если здесь пусто, значит children не передаются */}
+          {children || <h2>Контент не передан в Layout</h2>}
+        </main>
       </div>
     </div>
   );

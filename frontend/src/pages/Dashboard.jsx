@@ -1,14 +1,13 @@
-// src/pages/Dashboard.jsx
-import { useState, useEffect } from "react";
+import React from "react";
+import { useNavigate } from 'react-router-dom'; // Импорт навигации
 import DashboardLayout from "../layout/DashboardLayout";
 import CommandCenter from "../components/dashboard/CommandCenter";
 import StatsGrid from "../components/dashboard/StatsGrid";
 import StreamsBlock from "../components/dashboard/StreamsBlock";
 import Notifications from "../components/dashboard/Notifications";
 import TournamentsHistory from "../components/dashboard/TournamentsHistory";
-import CalendarBlock from "../components/dashboard/CalendarBlock";
-import OrganizerAchievements from "../components/dashboard/OrganizerAchievements";
-import { tournamentApi, apiUtils } from "../global/api";
+import CalendarBlock from "../components/dashboard/CalendarBlock";           // НОВЫЙ
+import OrganizerAchievements from "../components/dashboard/OrganizerAchievements"; // НОВЫЙ
 
 import {
   dashboardData,
@@ -39,6 +38,8 @@ export default function Dashboard() {
     }
   };
 
+  const navigate = useNavigate(); // Инициализация хука навигации
+
   return (
     <DashboardLayout>
       <div style={{ marginBottom: 32 }}>
@@ -53,7 +54,11 @@ export default function Dashboard() {
       </div>
 
       <div style={{ marginTop: 24 }}>
-        <TournamentsHistory data={tournamentsHistory} />
+        {/* Передаем функцию навигации в компонент истории турниров */}
+        <TournamentsHistory 
+          data={tournamentsHistory} 
+          onTournamentClick={(id) => navigate(`/tournament/${id}`)}
+        />
       </div>
       
       <div className="grid-2">
