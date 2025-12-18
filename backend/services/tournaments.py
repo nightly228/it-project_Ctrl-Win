@@ -6,11 +6,13 @@ from schemas import *
 from utils import *
 
 
-async def query_get_all_tournaments():
+async def query_get_all_tournaments(status: str = None):
     async with async_session_maker() as session:
         query_select = select(Tournament)
+        if status:
+            query_select = query_select.where(Tournament.status == status)
         result = await session.execute(query_select)
-        user_data = result.scalars().fetchall()
+        user_data = result.scalars().all()
         return user_data
 
 

@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     # Shutdown: cleanup if needed
     print("Shutting down")
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(root_path='/api', lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
