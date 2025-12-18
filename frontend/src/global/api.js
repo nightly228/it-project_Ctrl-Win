@@ -34,8 +34,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Токен истек или невалидный
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      // localStorage.removeItem('token');
+      // window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -52,7 +52,7 @@ export const userApi = {
    */
   getUserInfo: async (userId) => {
     try {
-      const response = await api.get(`/users/${userId}`);
+      const response = await api.get(`/users/me`);
       return response.data;
     } catch (error) {
       console.error('Error fetching user info:', error);
@@ -293,7 +293,7 @@ export const authApi = {
    */
   getCurrentUser: async () => {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get('/users/me');
       return response.data;
     } catch (error) {
       console.error('Error fetching current user:', error);

@@ -6,8 +6,10 @@ from fastapi import HTTPException
 
 
 def verify_jwt_token(token: str):
+    print(f"[[[[{token}]]]]")
     try:
         payload = jwt.decode(token, SECRET_TOKEN, algorithms=["HS256"])
+        print(f"[[[[{payload}]]]")
         if not payload:
             raise HTTPException(status_code=401, detail="Unauthorized")
         return payload

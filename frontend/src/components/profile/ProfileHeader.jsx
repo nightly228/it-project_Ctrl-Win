@@ -7,14 +7,14 @@ export default function ProfileHeader({ data }) {
             <div className="profile-avatar-container">
                 <div className="avatar">
                     <span role="img" aria-label="person">👤</span>
-                    <div className="avatar-level">LVL {data.level}</div>
+                    <div className="avatar-level">LVL {data.level || 0}</div>
                 </div>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
                         {data.pro && <span className="unlocked-label" style={{position: 'static', marginRight: 10, transform: 'none', background: 'linear-gradient(90deg, #a855f7, #ec4899)', clipPath: 'none', color: 'white', padding: '2px 8px'}}>PRO!</span>}
-                        <h2 style={{ fontSize: 32, fontWeight: 800, margin: 0 }}>{data.nickname}</h2>
+                        <h2 style={{ fontSize: 32, fontWeight: 800, margin: 0 }}>{data.name}</h2>
                     </div>
-                    <p style={{ color: '#9ca3af', margin: 0, fontSize: 16 }}>{data.role}</p>
+                    <p style={{ color: '#9ca3af', margin: 0, fontSize: 16 }}>{data.role || []}</p>
                 </div>
             </div>
 
