@@ -1,7 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Добавили useNavigate
 
 export default function Login() {
+  const navigate = useNavigate(); // Инициализируем навигацию
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Здесь обычно идет проверка логина/пароля
+    // Если всё ок, переходим на дашборд:
+    navigate('/dashboard');
+  };
+
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
@@ -10,7 +19,8 @@ export default function Login() {
           <p>С возвращением, боец!</p>
         </div>
 
-        <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+        {/* Привязываем функцию handleLogin к форме */}
+        <form className="auth-form" onSubmit={handleLogin}>
           <div className="form-group">
             <label>Email</label>
             <input type="email" placeholder="example@mail.com" required />

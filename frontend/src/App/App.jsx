@@ -1,36 +1,34 @@
-// src/App/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Импорт страниц
-import Dashboard from '../pages/Dashboard';
-import Profile from '../pages/Profile';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import Dashboard from '../pages/Dashboard';
+import CreateTournament from '../pages/CreateTournament';
+import Profile from '../pages/Profile';
+import Settings from '../pages/Settings';
 
-// Стили
-import '../styles/global.css';
-
-function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
-        {/* При заходе на базовую ссылку перенаправляем на логин */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-
-        {/* Маршруты БЕЗ сайтбара (для входа и регистрации) */}
+        {/* Базовые страницы */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Маршруты С сайтбаром (через наш DashboardLayout) */}
+        {/* Дашборд и его подразделы */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create-tournament" element={<CreateTournament />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
 
-        {/* Если ввели несуществующий путь — на логин */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Редирект: если зашли на "/" — идем на логин */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* Если ввели несуществующий адрес — на дашборд */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
   );
 }
-
-export default App;

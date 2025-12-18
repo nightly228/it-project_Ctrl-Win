@@ -580,3 +580,7 @@ h3 {
   text-underline-offset: 4px;
   text-decoration: underline;
 }
+.tournament-row:hover {
+  background: rgba(255, 255, 255, 0.05); /* Легкое высветление */
+  box-shadow: inset 2px 0 0 var(--purple); /* Фиолетовая полоска слева */
+}
