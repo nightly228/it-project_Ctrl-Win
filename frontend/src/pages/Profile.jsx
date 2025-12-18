@@ -1,5 +1,3 @@
-// src/pages/Profile.jsx
-
 import React, { useState } from 'react';
 import DashboardLayout from "../layout/DashboardLayout";
 import ProfileHeader from "../components/profile/ProfileHeader";
