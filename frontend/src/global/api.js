@@ -1,3 +1,6 @@
+// /src/components/global/api.js
+
+
 import axios from 'axios';
 
 // Базовый URL API
@@ -76,6 +79,7 @@ export const tournamentApi = {
       }
       
       const response = await api.get('/tournaments', { params });
+      console.log(response.data);
       return response.data.tournaments || [];
     } catch (error) {
       console.error('Error fetching tournaments:', error);
