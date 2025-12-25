@@ -1,58 +1,63 @@
-from datetime import datetime, timedelta
-from sqlalchemy import select, and_
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-from models.models import User, Tournament, Signup
+# backend/services/users.py
+
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException, status
+from models.models import User, Tournament
 from models.database import async_session_maker
-from schemas import *
-from utils import *
+from schemas import RegisterRequest, LoginRequest
+from utils import create_password_hash, create_jwt_token, is_password_correct
 
 async def register_user(data: RegisterRequest) -> str:
-    """
-    INSERT INTO users ($email, $passwordhash, $name)
-    """
     passwordhash = create_password_hash(password=data.password)
     async with async_session_maker() as session:
-        new_user = User(
-            email=data.email,
-            password_hash=passwordhash,
-            name=data.name
-        )
-        session.add(new_user)
-        await session.commit()
-    jwttoken = create_jwt_token(email=data.email)
-    return jwttoken
-
-
-async def get_password_hash(email: str) -> bytes:
-    """
-    SELECT passwordhash FROM users WHERE email == $email
-    """
-    async with async_session_maker() as session:
-        query_select = select(User).where(User.email == email)
-        result = await session.execute(query_select)
-        user_data = result.scalars().first()
-        return user_data.password_hash
-
+        try:
+            new_user = User(
+                email=data.email,
+                password_hash=passwordhash,
+                name=data.name
+            )
+            session.add(new_user)
+            await session.commit()
+        except IntegrityError:
+            # Если email уже существует
+            await session.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Пользователь с таким email уже зарегистрирован"
+            )
+            
+    return create_jwt_token(email=data.email)
 
 async def login_check(data: LoginRequest) -> str:
-    passwordhash = await get_password_hash(email=data.email)
-    if not passwordhash:
-        return False
-    success = is_password_correct(data.password, passwordhash)
-    if success:
-        jwttoken = create_jwt_token(email=data.email)
-        return jwttoken
-    else:
-        return False
-    
+    async with async_session_maker() as session:
+        query = select(User).where(User.email == data.email)
+        result = await session.execute(query)
+        user = result.scalars().first()
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Неверный email или пароль"
+            )
+        
+        if is_password_correct(data.password, user.password_hash):
+            return create_jwt_token(email=user.email)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Неверный email или пароль"
+            )
 
 async def get_user_info(email: str) -> User:
-    """
-    SELECT * FROM users WHERE email = $email
-    """
     async with async_session_maker() as session:
-        query_select = select(User).where(User.email == email)
-        result = await session.execute(query_select)
+        # Используем selectinload для загрузки связанных турниров, 
+        # если они понадобятся в схеме ответа
+        query = select(User).where(User.email == email)
+        result = await session.execute(query)
         user_data = result.scalars().first()
+        
+        if not user_data:
+            raise HTTPException(status_code=404, detail="Пользователь не найден")
+            
         return user_data
