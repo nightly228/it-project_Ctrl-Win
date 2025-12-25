@@ -16,10 +16,11 @@ async def query_get_all_tournaments(status: str = None):
         return user_data
 
 
-async def command_create_tournament(data: CreateTournamentRequest):
+async def command_create_tournament(data: CreateTournamentRequest, email: str):
     async with async_session_maker() as session:
         new_tournament = Tournament(
             name=data.name,
+            organiser_email=email,
             game=data.game,
             status="upcoming",
             max_players=data.max_players,

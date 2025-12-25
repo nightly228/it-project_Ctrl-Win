@@ -54,7 +54,7 @@ export default function Dashboard() {
       <div style={{ marginTop: 24 }}>
         {/* Передаем функцию навигации в компонент истории турниров */}
         <TournamentsHistory 
-          data={tournamentsHistory} 
+          data={tournaments} 
           onTournamentClick={(id) => navigate(`/tournament/${id}`)}
         />
       </div>

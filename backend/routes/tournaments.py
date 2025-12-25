@@ -14,8 +14,15 @@ async def get_all_tournaments():
 
 
 @router.post("/create")
-async def get_all_tournaments(data: CreateTournamentRequest):
-    await command_create_tournament(data=data)
+async def get_all_tournaments(data: CreateTournamentRequest, authorization: str = Header(...)):
+    
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+    
+    payload = verify_jwt_token(token=authorization.split()[1])
+    email = payload["sub"]
+
+    await command_create_tournament(data=data, email=email)
     return {"status": "ok"}
 
 
