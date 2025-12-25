@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from datetime import datetime
 from typing import Optional, List
 
@@ -18,10 +18,15 @@ class LoginRequest(BaseModel):
 class CreateTournamentRequest(BaseModel):
     name: str
     game: str
-    match_type: str = "1v1"  # "1v1", "3v3", "5v5"
-    max_players: int
+    match_type: str = Field(default="1v1")      # 1v1, 3v3, 5v5
+    bracket_type: str = Field(default="single_elimination")
+    max_players: int = Field(default=16)
     start_time: datetime
-    bracket_type: Optional[str] = "single_elimination"
+    
+    # Новые финансовые поля
+    prize_pool: float = Field(default=0.0)
+    entry_fee: float = Field(default=0.0)
+    sponsor_revenue: float = Field(default=0.0)
 
 class TournamentResponse(BaseModel):
     id: int

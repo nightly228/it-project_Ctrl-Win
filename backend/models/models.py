@@ -17,6 +17,14 @@ class User(Base):
     tournaments_created = relationship("Tournament", back_populates="organiser")
 
 
+class Team(Base):
+    __tablename__ = "teams"
+    id = Column(BigInteger(), primary_key=True, autoincrement=True)
+    name = Column(String(), nullable=False)
+    leader_email = Column(ForeignKey("users.email"), nullable=False)
+    created_at = Column(DateTime(), server_default=func.now())
+
+
 class Tournament(Base):
     __tablename__ = "tournaments"
     id = Column(BigInteger(), primary_key=True, autoincrement=True)
@@ -29,6 +37,9 @@ class Tournament(Base):
     max_players = Column(Integer())
     start_time = Column(DateTime())
     created_at = Column(DateTime(), server_default=func.now())
+    prize_pool = Column(Numeric(10, 2), default=0)    # Призовой фонд
+    entry_fee = Column(Numeric(10, 2), default=0)     # Взнос
+    sponsor_revenue = Column(Numeric(10, 2), default=0) # Прибыль от спонсора
     
     # Для интеграции с внешними сервисами
     external_id = Column(String(), nullable=True) # ID из Challonge/Toornament
@@ -44,6 +55,7 @@ class Signup(Base):
     user_email = Column(ForeignKey("users.email", ondelete="CASCADE"), nullable=False)
     status = Column(String(), default="pending") 
     created_at = Column(DateTime(), server_default=func.now())
+    final_place = Column(Integer(), nullable=True) # Место по итогу турнира
 
     __table_args__ = (
         UniqueConstraint('tournament_id', 'user_email', name='uq_tournament_user'),

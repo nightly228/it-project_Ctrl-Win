@@ -28,7 +28,8 @@ export default function TournamentsHistory({ data, onTournamentClick }) {
         <thead>
           <tr>
             <th style={{ width: '30%' }}>Название</th>
-            <th style={{ width: '20%' }}>Дата</th> {/* Увеличили немного ширину для даты */}
+            {/* Теперь комментарий внутри { }, это безопасно */}
+            <th style={{ width: '20%' }}>Дата</th> 
             <th style={{ width: '15%' }}>Игроки</th>
             <th style={{ width: '20%' }}>Статус</th>
             <th style={{ width: '15%', textAlign: 'right' }}>Доход</th>
@@ -46,7 +47,6 @@ export default function TournamentsHistory({ data, onTournamentClick }) {
                 {t.name || "Без названия"}
               </td>
               
-              {/* КРАСИВАЯ ДАТА */}
               <td style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
                 {formatDate(t.start_time)}
               </td>

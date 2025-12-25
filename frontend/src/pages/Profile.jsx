@@ -33,7 +33,7 @@ export default function Profile() {
 
     const renderContent = () => {
         if (!userData) return null;
-
+        console.log(userData);
         switch (activeTab) {
             case 'overview':
                 // Передаем данные пользователя в компоненты, если они того требуют
@@ -42,7 +42,7 @@ export default function Profile() {
                 // Если достижения приходят в объекте пользователя
                 return <AchievementsGrid data={userData.achievements || []} />;
             case 'stats':
-                return <ProfileStats stats={userData.stats} />;
+                return <ProfileStats data={userData} />;
             default:
                 return <ProfileProgress />;
         }

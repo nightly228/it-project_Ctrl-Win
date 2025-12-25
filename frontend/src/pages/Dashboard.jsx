@@ -10,24 +10,26 @@ import CalendarBlock from "../components/dashboard/CalendarBlock";           // 
 import OrganizerAchievements from "../components/dashboard/OrganizerAchievements"; // НОВЫЙ
 
 import {dashboardData, tournamentsHistory} from "../global/mockData";
-import { tournamentApi, apiUtils } from "../global/api";
+import { userApi, tournamentApi, apiUtils } from "../global/api";
 
 export default function Dashboard() {
+  const [userData, setUserData] = useState(null); 
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Загружаем турниры при монтировании компонента
   useEffect(() => {
-    fetchTournaments();
+    fetchAll();
   }, []);
 
-  const fetchTournaments = async () => {
+  const fetchAll = async () => {
     try {
       setLoading(true);
       const data = await tournamentApi.getAllTournaments();
-      console.log(data);
+      const user = await userApi.getUserInfo();
       setTournaments(data);
+      setUserData(user);
     } catch (err) {
       setError(apiUtils.handleError(err));
       console.error("Ошибка при загрузке турниров:", err);
@@ -68,7 +70,7 @@ export default function Dashboard() {
         ) : error ? (
           <div className="error-container">
             <p style={{ color: "red" }}>Ошибка: {error}</p>
-            <button onClick={fetchTournaments}>Повторить</button>
+            <button onClick={fetchAll}>Повторить</button>
           </div>
         ) : (
           <CalendarBlock data={tournaments} />

@@ -7,7 +7,7 @@ export default function ProfileHeader({ data }) {
             <div className="profile-avatar-container">
                 <div className="avatar">
                     <span role="img" aria-label="person">👤</span>
-                    <div className="avatar-level">LVL {data.level || 0}</div>
+                    <div className="avatar-level">LVL {Math.floor(Math.sqrt(data.totalTournaments || 0))}</div>
                 </div>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
@@ -18,17 +18,38 @@ export default function ProfileHeader({ data }) {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 40, marginTop: 20, fontSize: 14 }}>
-                <div style={{ color: 'var(--cyan)' }}>📧 {data.email}</div>
-                <div style={{ color: 'var(--pink)' }}>📍 {data.location || "Тёмная лошадка"}</div>
-                <div style={{ color: 'var(--yellow)' }}>🗓️ {data.daysOnline || 1} дней на платформе</div>
-            </div>
+            {(() => {
+                const registrationDate = new Date(data.created_at);
+                const now = new Date();
+                // Разница в миллисекундах -> в дни
+                const diffTime = Math.abs(now - registrationDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                return (
+                    <div style={{ display: 'flex', gap: 40, marginTop: 20, fontSize: 14 }}>
+                        <div style={{ color: 'var(--cyan)' }}>
+                            📧 {data.email}
+                        </div>
+                        <div style={{ color: 'var(--pink)' }}>
+                            📍 {data.location || "Тёмная лошадка"}
+                        </div>
+                        <div style={{ color: 'var(--yellow)' }}>
+                            🗓️ {diffDays} дней на платформе
+                        </div>
+                    </div>
+                );
+            })()}
 
             <div className="profile-stats-grid">
                 <div className="profile-stat-box" style={{border: '1px solid var(--purple)'}}>
                     <div className="icon" style={{color: 'var(--purple)'}}>🏆</div>
-                    <div style={{fontWeight: 700}}>{data.totalTournaments || 0}</div>
-                    <div style={{fontSize: 12, color: '#9ca3af'}}>Турниров</div>
+                    <div style={{fontWeight: 700}}>{data.total_participated || 0}</div>
+                    <div style={{fontSize: 12, color: '#9ca3af'}}>Турниров (участник)</div>
+                </div>
+                <div className="profile-stat-box" style={{border: '1px solid var(--cyan)'}}>
+                    <div className="icon" style={{color: 'var(--cyan)'}}>📈</div>
+                    <div style={{fontWeight: 700}}>{data.total_organized || 0}</div>
+                    <div style={{fontSize: 12, color: '#9ca3af'}}>Турниров (организатор)</div>
                 </div>
                 <div className="profile-stat-box" style={{border: '1px solid var(--yellow)'}}>
                     <div className="icon" style={{color: 'var(--yellow)'}}>⭐</div>
@@ -39,11 +60,6 @@ export default function ProfileHeader({ data }) {
                     <div className="icon" style={{color: '#10b981'}}>💰</div>
                     <div style={{fontWeight: 700}}>{data.revenue || 0}</div>
                     <div style={{fontSize: 12, color: '#9ca3af'}}>Доход</div>
-                </div>
-                <div className="profile-stat-box" style={{border: '1px solid var(--cyan)'}}>
-                    <div className="icon" style={{color: 'var(--cyan)'}}>📈</div>
-                    <div style={{fontWeight: 700}}>+12%</div>
-                    <div style={{fontSize: 12, color: '#9ca3af'}}>Прогресс</div>
                 </div>
             </div>
 

@@ -20,21 +20,27 @@ async def query_get_all_tournaments(status: str = None):
 
 async def command_create_tournament(data: CreateTournamentRequest, email: str):
     async with async_session_maker() as session:
-        # Создаем объект модели, используя данные из Pydantic схемы
+        # Создаем объект модели, распаковывая данные из схемы
         new_tournament = Tournament(
             name=data.name,
             organiser_email=email,
             game=data.game,
-            match_type=data.match_type, # Новое поле
-            bracket_type=data.bracket_type, # Новое поле
+            match_type=data.match_type,
+            bracket_type=data.bracket_type,
             status="upcoming",
             max_players=data.max_players,
-            start_time=data.start_time
+            start_time=data.start_time,
+            # Финансы
+            prize_pool=data.prize_pool,
+            entry_fee=data.entry_fee,
+            sponsor_revenue=data.sponsor_revenue
         )
+        
         session.add(new_tournament)
         await session.commit()
         await session.refresh(new_tournament)
         return new_tournament
+
 
 async def command_add_participant(email: str, tournament_id: int):
     async with async_session_maker() as session:
