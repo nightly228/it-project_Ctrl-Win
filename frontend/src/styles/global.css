@@ -584,3 +584,83 @@ h3 {
   background: rgba(255, 255, 255, 0.05); /* Легкое высветление */
   box-shadow: inset 2px 0 0 var(--purple); /* Фиолетовая полоска слева */
 }
+/* --- СТИЛИ ТУРНИРНОЙ СЕТКИ --- */
+
+.bracket-container {
+  display: flex;
+  gap: 60px; /* Расстояние для линий */
+  padding: 40px;
+  overflow-x: auto;
+}
+
+.bracket-round {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+}
+
+.round-title {
+  text-align: center;
+  color: var(--purple);
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+.round-matches {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-grow: 1;
+  position: relative;
+}
+
+.match-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  position: relative; /* Важно для позиционирования линий */
+  z-index: 1;
+}
+
+/* Линии, выходящие ИЗ матча (справа) */
+.bracket-round:not(:last-child) .match-card::after {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  width: 30px;
+  height: 2px;
+  background: var(--border);
+}
+
+/* Вертикальные линии-объединители */
+/* Рисуем скобку для каждого второго матча */
+.bracket-round:not(:last-child) .match-card:nth-child(odd)::before {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  width: 2px;
+  height: calc(100% + 40px); /* Высота зависит от отступа между матчами */
+  background: var(--border);
+}
+
+.match-team {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.match-divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.score {
+  color: var(--cyan);
+  font-weight: bold;
+}
