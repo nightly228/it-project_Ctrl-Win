@@ -4,9 +4,11 @@ from fastapi import APIRouter, HTTPException, Header, Depends
 from typing import List
 from schemas import CreateTournamentRequest, TournamentResponse
 from services.tournaments import (
-    query_get_all_tournaments, 
+    query_get_all_tournaments,
+    query_get_tournament_by_id,
     command_create_tournament, 
-    command_add_participant
+    command_add_participant,
+    get_platform_stats
 )
 from utils import verify_jwt_token
 
@@ -41,6 +43,26 @@ async def create_tournament_endpoint(
         "tournament_id": tournament.id,
         "message": "Турнир успешно создан"
     }
+
+
+@router.get("/stats")
+async def get_admin_dashboard_stats():
+    stats = await get_platform_stats()
+    return stats
+
+
+@router.get("/{tournament_id}")
+async def get_tournament(tournament_id: int):
+    # Вызываем сервисную функцию
+    tournament = await query_get_tournament_by_id(tournament_id)
+    
+    if not tournament:
+        raise HTTPException(
+            status_code=404, 
+            detail=f"Турнир с ID {tournament_id} не найден"
+        )
+        
+    return tournament
 
 
 # Регистрация участника на турнир

@@ -229,6 +229,15 @@ export const tournamentApi = {
       throw error;
     }
   },
+
+  getPlatformStats: async () => {
+        try {
+            const response = await api.get('/tournaments/stats');
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };
 
 /**

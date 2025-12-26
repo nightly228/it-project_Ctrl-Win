@@ -1,6 +1,6 @@
 # backend/services/tournaments.py
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import select, and_, func
 from models.models import Tournament, Signup, User
 from models.database import async_session_maker
@@ -17,6 +17,44 @@ async def query_get_all_tournaments(status: str = None):
         
         result = await session.execute(query_select)
         return result.scalars().all()
+    
+
+async def query_get_tournament_by_id(tournament_id: int):
+    async with async_session_maker() as session:
+        # 1. Получаем данные самого турнира
+        query = select(Tournament).where(Tournament.id == tournament_id)
+        result = await session.execute(query)
+        tournament = result.scalars().first()
+        
+        if not tournament:
+            return None
+            
+        # 2. Считаем количество подтвержденных регистраций
+        count_query = select(func.count(Signup.id)).where(
+            Signup.tournament_id == tournament_id,
+            Signup.status == 'confirmed'
+        )
+        count_res = await session.execute(count_query)
+        current_players = count_res.scalar()
+        
+        # Конвертируем в словарь для API и добавляем счетчик
+        tournament_dict = {
+            "id": tournament.id,
+            "name": tournament.name,
+            "game": tournament.game,
+            "match_type": tournament.match_type,
+            "bracket_type": tournament.bracket_type,
+            "status": tournament.status,
+            "max_players": tournament.max_players,
+            "current_players": current_players, # Наше вычисляемое поле
+            "start_time": tournament.start_time,
+            "prize_pool": float(tournament.prize_pool),
+            "entry_fee": float(tournament.entry_fee),
+            "sponsor_revenue": float(tournament.sponsor_revenue)
+        }
+        
+        return tournament_dict
+
 
 async def command_create_tournament(data: CreateTournamentRequest, email: str):
     async with async_session_maker() as session:
@@ -78,3 +116,26 @@ async def command_add_participant(email: str, tournament_id: int):
         session.add(new_signup)
         await session.commit()
         return {"status": "success", "message": "Регистрация завершена"}
+    
+
+# services/statistics.py
+async def get_platform_stats():
+    async with async_session_maker() as session:
+        last_month_start = datetime.now() - timedelta(days=30)
+
+        # Выполняем запросы
+        total_t = (await session.execute(select(func.count(Tournament.id)))).scalar()
+        total_p = (await session.execute(select(func.count(Signup.id)))).scalar()
+        month_t = (await session.execute(select(func.count(Tournament.id)).where(Tournament.created_at >= last_month_start))).scalar()
+        month_p = (await session.execute(select(func.count(Signup.id)).join(Tournament).where(Tournament.created_at >= last_month_start))).scalar()
+
+        return {
+            "all_time": {
+                "tournaments": int(total_t or 0),
+                "participants": int(total_p or 0)
+            },
+            "last_month": {
+                "tournaments": int(month_t or 0),
+                "participants": int(month_p or 0)
+            }
+        }

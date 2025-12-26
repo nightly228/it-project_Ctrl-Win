@@ -8,6 +8,7 @@ import Dashboard from '../pages/Dashboard';
 import CreateTournament from '../pages/CreateTournament';
 import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
+import TournamentDetail from '../pages/TournamentDetail';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/create-tournament" element={<CreateTournament />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/tournament/:id" element={<TournamentDetail />} />
 
         {/* Редирект: если зашли на "/" — идем на логин */}
         <Route path="/" element={<Navigate to="/login" replace />} />
