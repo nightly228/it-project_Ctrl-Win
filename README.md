@@ -50,11 +50,9 @@
 ```
 ## Технологический стек
 
-    Backend: FastAPI (Python), SQLAlchemy 2.0 (Async), PostgreSQL.
-
-    Frontend: React, Vite, Tailwind CSS.
-
-    Инфраструктура: Docker & Docker Compose.
+- Backend: FastAPI (Python), SQLAlchemy 2.0 (Async), PostgreSQL.
+- Frontend: React, Vite, Tailwind CSS.
+- Инфраструктура: Docker & Docker Compose.
 
 ## 📊 Материалы проекта
 Подробное описание бизнес-концепции, технических решений и перспектив развития:
